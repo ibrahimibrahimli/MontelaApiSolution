@@ -95,15 +95,18 @@ namespace MontelaApi.API.Controllers
             return Ok();
         }
 
-        [HttpPost("[action]")]
-        public async Task<IActionResult> Upload()
+        [HttpPost("{id}")]
+        public async Task<IActionResult> Upload(string id)
         {
-            var datas = await _storageService.UploadAsync("filesnew",Request.Form.Files);
-            await _productImageWriteRepository.AddRangeAsync(datas.Select(d => new ProductImageFile()
+            List<(string fileName, string pathOrContainerName)> result = await _storageService.UploadAsync("photo-images", Request.Form.Files);
+
+            Product product = await _productReadRepository.GetByIdAsync(id);
+            await _productImageWriteRepository.AddRangeAsync(result.Select(r => new ProductImageFile() 
             {
-                FileName = d.fileName,
-                Path = d.pathOrContainer,
-                Storage = _storageService.StorageName
+                FileName = r.fileName,
+                Path = r.pathOrContainerName,
+                Storage = _storageService.StorageName,
+                Products = new List<Product>() { product}
             }).ToList());
             await _productImageWriteRepository.SaveAsync();
             return Ok();
