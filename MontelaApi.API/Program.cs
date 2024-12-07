@@ -1,7 +1,9 @@
 using Application.Validators.Products;
 using FluentValidation.AspNetCore;
 using Infrastructure;
+using Infrastructure.Enums;
 using Infrastructure.Filters;
+using Infrastructure.Services.Storage.Local;
 using Persistance;
 using Scalar.AspNetCore;
 namespace MontelaApi.API
@@ -16,6 +18,9 @@ namespace MontelaApi.API
 
             builder.Services.AddPersistanceServices(builder.Configuration);
             builder.Services.AddInfrastructureServices();
+
+            builder.Services.AddStorage<LocalStorage>();
+            //builder.Services.AddStorage(StorageType.Local);
 
             builder.Services.AddControllers(options => options.Filters.Add<ValidationFilters>())
                 .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<ProductCreateValidator>())
