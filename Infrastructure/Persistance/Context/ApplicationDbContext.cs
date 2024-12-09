@@ -10,6 +10,9 @@ namespace Persistance.Context
         public DbSet<Product> Products { get; set; }    
         public DbSet<Order> Orders { get; set; }    
         public DbSet<Customer> Customers { get; set; }
+        public DbSet<Domain.Entities.File> Files { get; set; }
+        public DbSet<ProductImageFile> ProductImages { get; set; }
+        public DbSet<InvoiceFile> Invoices { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

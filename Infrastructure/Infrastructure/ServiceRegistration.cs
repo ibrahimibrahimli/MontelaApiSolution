@@ -1,4 +1,5 @@
 ﻿using Application.Services;
+using Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure
@@ -7,7 +8,7 @@ namespace Infrastructure
     {
         public static void AddInfrastructureServices(this IServiceCollection services)
         {
-            services.AddScoped<IFileService, IFileService>();
+            services.AddScoped<IFileService, FileService>();
         }
     }
 }

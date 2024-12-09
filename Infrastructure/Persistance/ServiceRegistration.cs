@@ -4,6 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Persistance.Context;
 using Persistance.Repositories;
+using Persistance.Repositories.File;
+using Persistance.Repositories.Invoice;
+using Persistance.Repositories.ProductImage;
 
 namespace Persistance
 {
@@ -18,6 +21,12 @@ namespace Persistance
             services.AddScoped<IOrderWriteRepository, OrderWriteRepository>();
             services.AddScoped<IProductReadRepository, ProductReadRepository>();
             services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
+            services.AddScoped<IProductImageReadRepository, ProductImageReadRepository>();
+            services.AddScoped<IProductImageWriteRepository, ProductImageWriteRepository>();
+            services.AddScoped<IFileReadRepository, FileReadRepository>();
+            services.AddScoped<IFileWriteRepository, FileWriteRepository>();
+            services.AddScoped<IInvoiceWriteRepository, InvoiceWriteRepository>();
+            services.AddScoped<IInvoiceReadRepository, InvoiceReadRepository>();
         }
     }
 }

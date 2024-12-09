@@ -12,6 +12,8 @@ namespace MontelaApi.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            Console.WriteLine(builder.Configuration.GetConnectionString("SqlServer"));
+
             builder.Services.AddPersistanceServices(builder.Configuration);
             builder.Services.AddInfrastructureServices();
 
@@ -26,6 +28,7 @@ namespace MontelaApi.API
             //builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
 
             builder.Services.AddOpenApi();
+
             builder.Services.AddCors(options => options.AddDefaultPolicy(
                 policy =>policy.WithOrigins("http://localhost:4200", "https://localhost:4200")
                 .AllowAnyHeader()
