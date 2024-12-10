@@ -1,6 +1,6 @@
 using Application.Validators.Products;
-using FluentValidation;
 using FluentValidation.AspNetCore;
+using Infrastructure;
 using Infrastructure.Filters;
 using Persistance;
 using Scalar.AspNetCore;
@@ -13,6 +13,7 @@ namespace MontelaApi.API
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddPersistanceServices(builder.Configuration);
+            builder.Services.AddInfrastructureServices();
 
             builder.Services.AddControllers(options => options.Filters.Add<ValidationFilters>())
                 .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<ProductCreateValidator>())

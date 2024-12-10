@@ -1,9 +1,7 @@
-﻿using Application.Abstract;
-using Application.Repositories;
+﻿using Application.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Persistance.Concrets;
 using Persistance.Context;
 using Persistance.Repositories;
 
@@ -20,7 +18,6 @@ namespace Persistance
             services.AddScoped<IOrderWriteRepository, OrderWriteRepository>();
             services.AddScoped<IProductReadRepository, ProductReadRepository>();
             services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
-            services.AddScoped<IproductService, ProductService>();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Application.Repositories;
 using Application.RequestParameters;
+using Application.Services;
 using Application.ViewModels.Products;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -14,12 +15,14 @@ namespace MontelaApi.API.Controllers
         private readonly IProductReadRepository _productReadRepository;
         private readonly IProductWriteRepository _productWriteRepository;
         private readonly IWebHostEnvironment _env;
+        private readonly IFileService _fileService;
 
-        public ProductsController(IProductReadRepository productReadRepository, IProductWriteRepository productWriteRepository, IWebHostEnvironment env)
+        public ProductsController(IProductReadRepository productReadRepository, IProductWriteRepository productWriteRepository, IWebHostEnvironment env, IFileService fileService)
         {
             _productReadRepository = productReadRepository;
             _productWriteRepository = productWriteRepository;
             _env = env;
+            _fileService = fileService;
         }
 
         [HttpGet]
@@ -83,19 +86,7 @@ namespace MontelaApi.API.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Upload()
         {
-            Random rnd = new();
-            string uploadPath = Path.Combine(_env.WebRootPath, "resource/product-images");
-
-            if (!Directory.Exists(uploadPath))
-                Directory.CreateDirectory(uploadPath);
-
-            foreach(IFormFile file in Request.Form.Files)
-            {
-                string fullPath = Path.Combine(uploadPath, $"{rnd.Next()}{Path.GetExtension(file.FileName)}");
-                using FileStream fileStream = new(fullPath, FileMode.Create, FileAccess.Write, FileShare.None, 1024 * 1024, useAsync : false);
-                await file.CopyToAsync(fileStream);
-                await fileStream.FlushAsync();
-            }
+            await _fileService.UploadAsync("resources/product-images",Request.Form.Files);
             return Ok();
         }
     }
