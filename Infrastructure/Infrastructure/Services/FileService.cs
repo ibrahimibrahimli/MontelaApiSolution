@@ -1,4 +1,5 @@
 ﻿using Application.Services;
+using Infrastructure.Operations;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System.IO.Pipelines;
@@ -31,9 +32,45 @@ namespace Infrastructure.Services
             }
         }
 
-        public Task<string> FileRenameAsync(string fileName)
+         async Task<string> FileRenameAsync(string path, string fileName, bool first = true)
         {
-            throw new NotImplementedException();
+            string fileNewName = await Task.Run<string>(async() =>
+            {
+                string extension = Path.GetExtension(fileName);
+
+                string fileNewName = string.Empty;
+                if (first)
+                {
+                    string oldName = Path.GetFileNameWithoutExtension(fileName);
+                    fileNewName = $"{NameOperation.CharacterRegulatory(oldName)}{extension}";
+                }
+                else
+                {
+                    fileNewName = fileName;
+                    int indexNo1 = fileNewName.IndexOf("-");
+
+                    if(indexNo1 == -1)
+                    {
+                        fileNewName = $"{Path.GetFileNameWithoutExtension(fileName)}-2{extension}";
+                    }
+                    else
+                    {
+                        int indexNo2 = fileNewName.IndexOf(".");
+                        string fileNo = fileNewName.Substring(indexNo1, indexNo2 - indexNo1 - 1);
+                        int _fileNo = int.Parse(fileNo);
+                        _fileNo++;
+                        fileNewName = fileNewName.Replace
+                    }
+                }
+
+
+
+                if (File.Exists($"{path}\\{fileNewName}"))
+                    return await FileRenameAsync(path, fileNewName, false);
+                else
+                    return fileNewName;
+            });
+            return fileNewName;
         }
 
         public async Task<List<(string fileName, string path)>> UploadAsync(string path, IFormFileCollection files)
