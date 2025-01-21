@@ -1,0 +1,6 @@
+@MontelaApi.API_HostAddress = http://localhost:5110
+
+GET {{MontelaApi.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
