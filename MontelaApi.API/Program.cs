@@ -1,4 +1,5 @@
 using Persistance;
+using Scalar.AspNetCore;
 namespace MontelaApi.API
 {
     public class Program
@@ -13,6 +14,8 @@ namespace MontelaApi.API
             builder.Services.AddOpenApi();
 
 
+
+
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
@@ -20,9 +23,21 @@ namespace MontelaApi.API
                 app.MapOpenApi();
             }
 
+
+            app.MapScalarApiReference(options =>
+            {
+                options
+                    .WithTitle("TITLE_HERE")
+                    .WithDownloadButton(true)
+                    .WithTheme(ScalarTheme.Purple)
+                    .WithDefaultHttpClient(ScalarTarget.JavaScript, ScalarClient.Axios);
+            });
+
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
+
+            builder.Services.AddEndpointsApiExplorer();
 
 
             app.MapControllers();
