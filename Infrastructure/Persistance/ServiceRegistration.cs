@@ -10,7 +10,7 @@ namespace Persistance
     {
         public static void AddPersistanceServices(this IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer("Server=LAPTOP-JBUKPKDJ;Database=myDataBase;Trusted_Connection=True"));
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer("Server=LAPTOP-JBUKPKDJ;Database=MontelaDb; Trusted_Connection=True; TrustServerCertificate=true;"));
             services.AddSingleton<IproductService, ProductService>();
         }
     }
