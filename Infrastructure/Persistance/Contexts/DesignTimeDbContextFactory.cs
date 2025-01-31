@@ -9,6 +9,10 @@ namespace Persistance.Contexts
     {
         private readonly IConfiguration _configuration;
 
+        public DesignTimeDbContextFactory()
+        {
+            
+        }
         public DesignTimeDbContextFactory(IConfiguration configuration)
         {
             _configuration = configuration;

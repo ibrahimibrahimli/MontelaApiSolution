@@ -1,4 +1,5 @@
 ﻿using Application.Abstract;
+using Application.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,18 +9,25 @@ namespace MontelaApi.API.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly IproductService _productService;
+        private readonly IProductReadRepository _productReadRepository;
+        private readonly IProductWriteRepository _productWriteRepository;
 
-        public ProductsController(IproductService productService)
+        public ProductsController(IProductReadRepository productReadRepository, IProductWriteRepository productWriteRepository)
         {
-            _productService = productService;
+            _productReadRepository = productReadRepository;
+            _productWriteRepository = productWriteRepository;
         }
 
         [HttpGet]
-        public IActionResult GetProducts()
+        public async void Get()
         {
-            var products = _productService.GetProducts();
-            return Ok(products);
+           await _productWriteRepository.AddRangeAsync(new()
+            {
+                new(){Id = Guid.NewGuid(), Name = "Lenovo Laptop", Price = 100, CreatedDate = DateTime.Now, Stock = 67},
+                new(){Id = Guid.NewGuid(), Name = "Samsung Laptop", Price = 345, CreatedDate = DateTime.Now, Stock = 84},
+                new(){Id = Guid.NewGuid(), Name = "Lenovo Laptop", Price = 100, CreatedDate = DateTime.Now, Stock = 59}
+            });
+           await _productWriteRepository.SaveAsync();
         }
     }
 }

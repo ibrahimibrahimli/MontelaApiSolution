@@ -9,5 +9,6 @@ namespace Application.Repositories
         Task<bool> UpdateAsync(T entity);
         Task<bool> Remove(string id);
         Task<bool> Delete(string id);
+        Task<int> SaveAsync();
     }
 }

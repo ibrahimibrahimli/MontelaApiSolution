@@ -55,5 +55,14 @@ namespace Persistance.Repositories
         public async Task<int> SaveAsync()
         => await _context.SaveChangesAsync();
 
+        public Task<bool> UpdateAsync(T entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> Delete(string id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
