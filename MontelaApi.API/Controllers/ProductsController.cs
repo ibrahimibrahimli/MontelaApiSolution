@@ -1,5 +1,6 @@
 ﻿using Application.Abstract;
 using Application.Repositories;
+using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +20,7 @@ namespace MontelaApi.API.Controllers
         }
 
         [HttpGet]
-        public async void Get()
+        public async Task Get()
         {
            await _productWriteRepository.AddRangeAsync(new()
             {
@@ -28,6 +29,13 @@ namespace MontelaApi.API.Controllers
                 new(){Id = Guid.NewGuid(), Name = "Lenovo Laptop", Price = 100, CreatedDate = DateTime.Now, Stock = 59}
             });
            await _productWriteRepository.SaveAsync();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(string id)
+        {
+            Product product = await _productReadRepository.GetByIdAsync(id);
+            return Ok(product);
         }
     }
 }
