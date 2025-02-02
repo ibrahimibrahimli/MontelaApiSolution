@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace Persistance.Repositories
 {
-    public class ReadRepository<T> : IReadRepository<T> where T : BaseEntity
+    public class ReadRepository<T> : IReadRepository<T> where T : BaseEntity, new()
     {
         private readonly ApplicationDbContext _context;
 

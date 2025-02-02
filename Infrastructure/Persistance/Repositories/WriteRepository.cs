@@ -6,7 +6,7 @@ using Persistance.Context;
 
 namespace Persistance.Repositories
 {
-    public class WriteRepository<T> : IWriteRepository<T> where T : BaseEntity
+    public class WriteRepository<T> : IWriteRepository<T> where T : BaseEntity, new()
     {
         private readonly ApplicationDbContext _context;
 
