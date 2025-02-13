@@ -12,6 +12,10 @@ namespace MontelaApi.API
 
             builder.Services.AddControllers();
             builder.Services.AddOpenApi();
+            builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
+                policy.WithOrigins("http://localhost:4200", "https://localhost:4200").AllowAnyHeader()
+                .AllowAnyMethod()
+            ));
 
 
 
@@ -32,6 +36,8 @@ namespace MontelaApi.API
                     .WithTheme(ScalarTheme.Purple)
                     .WithDefaultHttpClient(ScalarTarget.JavaScript, ScalarClient.Axios);
             });
+
+            app.UseCors();
 
             app.UseHttpsRedirection();
 

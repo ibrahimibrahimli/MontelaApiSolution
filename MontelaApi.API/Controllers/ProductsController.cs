@@ -20,22 +20,9 @@ namespace MontelaApi.API.Controllers
         }
 
         [HttpGet]
-        public async Task Get()
+        public async Task<IActionResult> Get()
         {
-           await _productWriteRepository.AddRangeAsync(new()
-            {
-                new(){Id = Guid.NewGuid(), Name = "Lenovo Laptop", Price = 100, CreatedDate = DateTime.Now, Stock = 67},
-                new(){Id = Guid.NewGuid(), Name = "Samsung Laptop", Price = 345, CreatedDate = DateTime.Now, Stock = 84},
-                new(){Id = Guid.NewGuid(), Name = "Lenovo Laptop", Price = 100, CreatedDate = DateTime.Now, Stock = 59}
-            });
-           await _productWriteRepository.SaveAsync();
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id)
-        {
-            Product product = await _productReadRepository.GetByIdAsync(id);
-            return Ok(product);
+            return Ok("Hello");
         }
     }
 }
