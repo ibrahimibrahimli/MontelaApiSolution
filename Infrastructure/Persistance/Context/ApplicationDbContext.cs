@@ -20,9 +20,7 @@ namespace Persistance.Context
                 {
                     EntityState.Added => item.Entity.CreatedDate = DateTime.UtcNow,
                     EntityState.Modified => item.Entity.UpdatedDate = DateTime.UtcNow,
-                    EntityState.Detached => throw new NotImplementedException(),
-                    EntityState.Unchanged => throw new NotImplementedException(),
-                    //EntityState.Deleted => item.Entity.Deleted = item.Entity.Id,
+                    _=>DateTime.UtcNow
                 };
             }
             return await base.SaveChangesAsync(cancellationToken); 
