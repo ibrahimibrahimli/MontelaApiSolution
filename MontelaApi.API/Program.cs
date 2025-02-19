@@ -1,3 +1,7 @@
+using Application.Validators.Products;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Infrastructure.Filters;
 using Persistance;
 using Scalar.AspNetCore;
 namespace MontelaApi.API
@@ -10,10 +14,20 @@ namespace MontelaApi.API
 
             builder.Services.AddPersistanceServices(builder.Configuration);
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(options => options.Filters.Add<ValidationFilters>())
+                .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<ProductCreateValidator>())
+                .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
+
+            builder.Services.AddEndpointsApiExplorer();
+
+
+            //builder.Services.AddValidatorsFromAssemblyContaining<ProductCreateValidator>();
+            //builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
+
             builder.Services.AddOpenApi();
-            builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
-                policy.WithOrigins("http://localhost:4200", "https://localhost:4200").AllowAnyHeader()
+            builder.Services.AddCors(options => options.AddDefaultPolicy(
+                policy =>policy.WithOrigins("http://localhost:4200", "https://localhost:4200")
+                .AllowAnyHeader()
                 .AllowAnyMethod()
             ));
 
@@ -28,10 +42,10 @@ namespace MontelaApi.API
             }
 
 
-            app.MapScalarApiReference(options =>
+            app.MapScalarApiReference("montelaApi",options =>
             {
                 options
-                    .WithTitle("TITLE_HERE")
+                    .WithTitle("ScalarUi Test MontelaAPI")
                     .WithDownloadButton(true)
                     .WithTheme(ScalarTheme.Purple)
                     .WithDefaultHttpClient(ScalarTarget.JavaScript, ScalarClient.Axios);
@@ -43,7 +57,6 @@ namespace MontelaApi.API
 
             app.UseAuthorization();
 
-            builder.Services.AddEndpointsApiExplorer();
 
 
             app.MapControllers();

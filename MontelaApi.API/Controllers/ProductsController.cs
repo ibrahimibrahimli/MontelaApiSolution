@@ -28,10 +28,10 @@ namespace MontelaApi.API.Controllers
             return Ok(data);
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
         {
-           Product product = await _productReadRepository.GetByIdAsync(id, false);
+            Product product = await _productReadRepository.GetByIdAsync(id, false);
             return Ok(product);
         }
 
@@ -39,6 +39,8 @@ namespace MontelaApi.API.Controllers
 
         public async  Task<IActionResult> Post(ProductCreate model)
         {
+
+            if (ModelState.IsValid) { }
            await _productWriteRepository.AddAsync(new() { Name = model.Name, Price = model.Price, Stock = model.Stock });
             await _productWriteRepository.SaveAsync();
             return StatusCode((int)HttpStatusCode.Created);
