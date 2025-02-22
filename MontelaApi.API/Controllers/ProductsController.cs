@@ -1,8 +1,6 @@
-﻿using Application.Abstract;
-using Application.Repositories;
+﻿using Application.Repositories;
 using Application.ViewModels.Products;
 using Domain.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -24,7 +22,15 @@ namespace MontelaApi.API.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         { 
-            var data = _productReadRepository.GetAll(false);
+            var data = _productReadRepository.GetAll(false).Select(p => new
+            {
+                p.Id,
+                p.Name,
+                p.Stock,
+                p.Price,
+                p.CreatedDate,
+                p.UpdatedDate,
+            });
             return Ok(data);
         }
 
