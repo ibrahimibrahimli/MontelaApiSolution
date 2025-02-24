@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Bases;
+using Domain.Entities;
 using FluentValidation;
 
 namespace Application.Validators
@@ -7,7 +8,10 @@ namespace Application.Validators
     {
         public CustomerValidation()
         {
-            
+            RuleFor(c => c.Name).NotEmpty()
+                .NotNull()
+                .WithMessage(BaseUiMessages.NOT_EMPTY_MESSAGE);
+
         }
     }
 }
