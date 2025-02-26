@@ -1,4 +1,5 @@
 ﻿using Application.Repositories;
+using Application.RequestParameters;
 using Application.ViewModels.Products;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,7 @@ namespace MontelaApi.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery]Pagination pagination)
         { 
             var data = _productReadRepository.GetAll(false).Select(p => new
             {
@@ -30,7 +31,7 @@ namespace MontelaApi.API.Controllers
                 p.Price,
                 p.CreatedDate,
                 p.UpdatedDate,
-            });
+            }).Skip(pagination.Page * pagination.Size).Take(pagination.Size);
             return Ok(data);
         }
 
