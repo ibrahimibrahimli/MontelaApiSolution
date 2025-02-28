@@ -23,6 +23,7 @@ namespace MontelaApi.API.Controllers
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery]Pagination pagination)
         { 
+            int productsCount = _productReadRepository.GetAll(false).Count();
             var data = _productReadRepository.GetAll(false).Select(p => new
             {
                 p.Id,
@@ -32,7 +33,11 @@ namespace MontelaApi.API.Controllers
                 p.CreatedDate,
                 p.UpdatedDate,
             }).Skip(pagination.Page * pagination.Size).Take(pagination.Size);
-            return Ok(data);
+            return Ok(new
+            {
+                productsCount,
+                data
+            });
         }
 
         [HttpGet("{id}")]
