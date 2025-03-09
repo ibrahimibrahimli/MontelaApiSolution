@@ -50,6 +50,7 @@ namespace MontelaApi.API
                     .WithTheme(ScalarTheme.Purple)
                     .WithDefaultHttpClient(ScalarTarget.JavaScript, ScalarClient.Axios);
             });
+            app.UseStaticFiles();
 
             app.UseCors();
 
