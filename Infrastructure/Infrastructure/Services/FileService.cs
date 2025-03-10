@@ -59,7 +59,8 @@ namespace Infrastructure.Services
                         string fileNo = fileNewName.Substring(indexNo1, indexNo2 - indexNo1 - 1);
                         int _fileNo = int.Parse(fileNo);
                         _fileNo++;
-                        fileNewName = fileNewName.Replace
+                        fileNewName = fileNewName.Remove(indexNo1, indexNo2 - indexNo1 - 1)
+                        .Insert(indexNo1, _fileNo.ToString());
                     }
                 }
 
