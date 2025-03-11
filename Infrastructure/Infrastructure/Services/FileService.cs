@@ -20,7 +20,7 @@ namespace Infrastructure.Services
             try
             {
                 await using FileStream fileStream = new(path, FileMode.Create, FileAccess.Write, FileShare.None, 1024 * 1024, useAsync: false);
-                await fileStream.CopyToAsync(fileStream);
+                await file.CopyToAsync(fileStream);
                 await fileStream.FlushAsync();
                 return true;
             }
@@ -32,9 +32,9 @@ namespace Infrastructure.Services
             }
         }
 
-         async Task<string> FileRenameAsync(string path, string fileName, bool first = true)
+        async Task<string> FileRenameAsync(string path, string fileName, bool first = true)
         {
-            string fileNewName = await Task.Run<string>(async() =>
+            string fileNewName = await Task.Run<string>(async () =>
             {
                 string extension = Path.GetExtension(fileName);
 
@@ -49,18 +49,37 @@ namespace Infrastructure.Services
                     fileNewName = fileName;
                     int indexNo1 = fileNewName.IndexOf("-");
 
-                    if(indexNo1 == -1)
+                    if (indexNo1 == -1)
                     {
                         fileNewName = $"{Path.GetFileNameWithoutExtension(fileName)}-2{extension}";
                     }
                     else
                     {
+                        int lastIndex = 0;
+                        while (true)
+                        {
+                            lastIndex = indexNo1;
+                            indexNo1 = fileNewName.IndexOf("-", indexNo1 + 1);
+                            if (indexNo1 == -1)
+                            {
+                                indexNo1 = lastIndex;
+                                break;
+                            }
+                        }
+
                         int indexNo2 = fileNewName.IndexOf(".");
-                        string fileNo = fileNewName.Substring(indexNo1, indexNo2 - indexNo1 - 1);
-                        int _fileNo = int.Parse(fileNo);
-                        _fileNo++;
-                        fileNewName = fileNewName.Remove(indexNo1, indexNo2 - indexNo1 - 1)
-                        .Insert(indexNo1, _fileNo.ToString());
+                        string fileNo = fileNewName.Substring(indexNo1 + 1, indexNo2 - indexNo1 - 1);
+
+                        if (int.TryParse(fileNo, out int _fileNo))
+                        {
+                            _fileNo++;
+                            fileNewName = fileNewName.Remove(indexNo1 + 1, indexNo2 - indexNo1 - 1)
+                            .Insert(indexNo1 + 1, _fileNo.ToString());
+                        }
+                        else
+                        {
+                            fileNewName = $"{Path.GetFileNameWithoutExtension(fileName)}-2{extension}";
+                        }
                     }
                 }
 
@@ -84,13 +103,14 @@ namespace Infrastructure.Services
             List<bool> results = new();
             foreach (IFormFile file in files)
             {
-                string fileNewName = await FileRenameAsync(file.FileName);
+                string fileNewName = await FileRenameAsync(uploadPath, file.FileName);
                 bool result = await CopyFileAsync($"{uploadPath}\\{fileNewName}", file);
                 datas.Add((fileNewName, $"{uploadPath}\\{fileNewName}"));
                 results.Add(result);
             }
-            if(results.TrueForAll(x => x.Equals(true))){
-               return datas;
+            if (results.TrueForAll(x => x.Equals(true)))
+            {
+                return datas;
             }
 
 
