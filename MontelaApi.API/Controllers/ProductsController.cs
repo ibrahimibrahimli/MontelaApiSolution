@@ -98,7 +98,7 @@ namespace MontelaApi.API.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Upload()
         {
-            var datas = await _storageService.UploadAsync("resources/files",Request.Form.Files);
+            var datas = await _storageService.UploadAsync("filesnew",Request.Form.Files);
             await _productImageWriteRepository.AddRangeAsync(datas.Select(d => new ProductImageFile()
             {
                 FileName = d.fileName,
