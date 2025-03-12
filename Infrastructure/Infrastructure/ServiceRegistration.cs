@@ -1,6 +1,7 @@
 ﻿using Application.Abstractions.Storage;
 using Infrastructure.Enums;
 using Infrastructure.Services.Storage;
+using Infrastructure.Services.Storage.Azure;
 using Infrastructure.Services.Storage.Local;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,11 +13,12 @@ namespace Infrastructure
         {
             services.AddScoped<IStorageService, StorageService>();
         }
-        public static void AddStorage<T>(this IServiceCollection services) where T : class,  IStorage
+        public static void AddStorage<T>(this IServiceCollection services) where T : Storage,  IStorage
         {
             services.AddScoped<IStorage, T>();
         }
 
+        //Not Suggested!!!
         public static void AddStorage(this IServiceCollection services, StorageType storageType) 
         {
             switch (storageType)
@@ -25,7 +27,7 @@ namespace Infrastructure
                     services.AddScoped<IStorage, LocalStorage>();
                     break;
                 case StorageType.Azure:
-
+                    services.AddScoped<IStorage, AzureStorage>();
                     break;
                 case StorageType.AWS:
 
