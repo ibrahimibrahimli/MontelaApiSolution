@@ -3,7 +3,7 @@ using Application.Repositories;
 using MediatR;
 using Application.DTOs;
 
-namespace Application.Features.Queries.GetAllProduct
+namespace Application.Features.Queries.Product.GetAllProduct
 {
     public class GetAllProductQueryHandler : IRequestHandler<GetAllProductQueryRequest, GetAllProductQueryResponse>
     {
@@ -31,7 +31,7 @@ namespace Application.Features.Queries.GetAllProduct
                 }).ToList();
 
 
-            return Task.FromResult( new GetAllProductQueryResponse()
+            return Task.FromResult(new GetAllProductQueryResponse()
             {
                 TotalCount = productsCount,
                 Products = products

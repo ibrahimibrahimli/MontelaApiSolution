@@ -1,7 +1,7 @@
 ﻿using Application.RequestParameters;
 using MediatR;
 
-namespace Application.Features.Queries.GetAllProduct
+namespace Application.Features.Queries.Product.GetAllProduct
 {
     public class GetAllProductQueryRequest : IRequest<GetAllProductQueryResponse>
     {
