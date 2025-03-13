@@ -1,3 +1,4 @@
+using Application;
 using Application.Validators.Products;
 using FluentValidation.AspNetCore;
 using Infrastructure;
@@ -19,7 +20,8 @@ namespace MontelaApi.API
 
             builder.Services.AddPersistanceServices(builder.Configuration);
             builder.Services.AddInfrastructureServices();
-            Console.WriteLine(builder.Configuration["Storage : Azure"]);
+            builder.Services.AddApplicationServices();
+
             builder.Services.AddStorage<AzureStorage>();
             //builder.Services.AddStorage(StorageType.Local);
 
