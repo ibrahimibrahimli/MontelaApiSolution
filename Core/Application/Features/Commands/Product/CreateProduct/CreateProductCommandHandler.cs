@@ -1,7 +1,7 @@
 ﻿using Application.Repositories;
 using MediatR;
 
-namespace Application.Features.Commands.CreateProduct
+namespace Application.Features.Commands.Product.CreateProduct
 {
     public class CreateProductCommandHandler : IRequestHandler<CreateProductCommandRequest, CreateProductCommandResponse>
     {
@@ -18,7 +18,7 @@ namespace Application.Features.Commands.CreateProduct
             {
                 Name = request.Name,
                 Price = request.Price,
-                Stock = request.Stock 
+                Stock = request.Stock
             });
             await _productWriteRepository.SaveAsync();
 
