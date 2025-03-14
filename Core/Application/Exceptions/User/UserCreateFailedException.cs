@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Application.Exceptions
+namespace Application.Exceptions.User
 {
     public class UserCreateFailedException : Exception
     {
