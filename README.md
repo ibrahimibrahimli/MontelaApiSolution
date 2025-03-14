@@ -39,3 +39,7 @@ Swagger (for API documentation)
 AutoMapper
 
 Serilog (for logging)
+
+
+Author: İbrahim İbrahimli
+License: MIT
