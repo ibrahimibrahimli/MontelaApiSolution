@@ -6,8 +6,11 @@ using Infrastructure.Enums;
 using Infrastructure.Filters;
 using Infrastructure.Services.Storage.Azure;
 using Infrastructure.Services.Storage.Local;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Persistance;
 using Scalar.AspNetCore;
+using System.Text;
 namespace MontelaApi.API
 {
     public class Program
@@ -34,6 +37,22 @@ namespace MontelaApi.API
 
             //builder.Services.AddValidatorsFromAssemblyContaining<ProductCreateValidator>();
             //builder.Services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer("Admin",options =>
+                {
+                    options.TokenValidationParameters = new()
+                    {
+                        ValidateAudience = true,
+                        ValidateIssuer = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+
+                        ValidAudience = builder.Configuration["JWTToken:Audience"],
+                        ValidIssuer = builder.Configuration["JWTToken:Issuer"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTToken : SecurityKey"])),
+                    };
+                });
 
             builder.Services.AddOpenApi();
 
@@ -68,6 +87,7 @@ namespace MontelaApi.API
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

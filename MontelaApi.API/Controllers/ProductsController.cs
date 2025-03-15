@@ -7,6 +7,7 @@ using Application.Features.Queries.Product.GetAllProduct;
 using Application.Features.Queries.Product.GetByIdProduct;
 using Application.Features.Queries.ProductImageFile.GetProductImage;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -14,6 +15,7 @@ namespace MontelaApi.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Admin")]
     public class ProductsController : ControllerBase
     {
        
