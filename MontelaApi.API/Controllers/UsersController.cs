@@ -1,4 +1,5 @@
 ﻿using Application.Features.Commands.User.CreateUser;
+using Application.Features.Commands.User.FacebookLogin;
 using Application.Features.Commands.User.GoogleLogin;
 using Application.Features.Commands.User.LoginUser;
 using MediatR;
@@ -36,6 +37,13 @@ namespace MontelaApi.API.Controllers
         public async Task<IActionResult> GoogleLogin(GoogleLoginCommandRequest googleLoginCommandRequest)
         {
             GoogleLoginCommandResponse response = await _mediator.Send(googleLoginCommandRequest);
+            return Ok(response);
+        }
+
+        [HttpPost("facebook-login")]
+        public async Task<IActionResult> FacebookLogin(FacebookLoginCommandRequest facebookLoginCommandRequest)
+        {
+            FacebookLoginCommandResponse response = await _mediator.Send(facebookLoginCommandRequest);
             return Ok(response);
         }
     }
