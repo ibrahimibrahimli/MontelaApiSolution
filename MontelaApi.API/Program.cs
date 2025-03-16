@@ -25,6 +25,7 @@ namespace MontelaApi.API
             builder.Services.AddInfrastructureServices();
             builder.Services.AddApplicationServices();
 
+
             builder.Services.AddStorage<AzureStorage>();
             //builder.Services.AddStorage(StorageType.Local);
 
