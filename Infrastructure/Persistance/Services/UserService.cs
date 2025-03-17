@@ -1,5 +1,6 @@
 ﻿using Application.Abstractions.Services;
 using Application.DTOs.User;
+using Application.Exceptions.User;
 using Application.Features.Commands.User.CreateUser;
 using Azure.Core;
 using Domain.Entities.Identity;
@@ -38,6 +39,18 @@ namespace Persistance.Services
                 }
             }
             return response;
+        }
+
+        public async Task UpdateRefreshToken(string refreshToken, AppUser user, DateTime accessTokenDate, int addOnAccessTokenTime)
+        {
+            if (user is not null)
+            {
+                user.RefreshToken = refreshToken;
+                user.RefreshTokenEndDate = accessTokenDate.AddSeconds(addOnAccessTokenTime);
+                await _userManager.UpdateAsync(user);
+            }
+            else
+                throw new NotFoundUserException();
         }
     }
 }

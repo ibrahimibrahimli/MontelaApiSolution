@@ -20,6 +20,8 @@ namespace MontelaApi.API
             var builder = WebApplication.CreateBuilder(args);
 
             Console.WriteLine(builder.Configuration.GetConnectionString("SqlServer"));
+            Console.WriteLine($"Connection String: {builder.Configuration.GetConnectionString("SqlServer")}");
+
 
             builder.Services.AddPersistanceServices(builder.Configuration);
             builder.Services.AddInfrastructureServices();
@@ -52,6 +54,7 @@ namespace MontelaApi.API
                         ValidAudience = builder.Configuration["JWTToken:Audience"],
                         ValidIssuer = builder.Configuration["JWTToken:Issuer"],
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTToken : SecurityKey"])),
+                        LifetimeValidator =( notBefore,  expires,  securityToken, tokenValidationParameters) => expires != null ? expires > DateTime.UtcNow : false,
                     };
                 });
 

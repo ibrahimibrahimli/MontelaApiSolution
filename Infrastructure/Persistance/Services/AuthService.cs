@@ -5,6 +5,7 @@ using Application.DTOs.Facebook;
 using Application.Exceptions.User;
 using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System.Text.Json;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
@@ -18,21 +19,23 @@ namespace Persistance.Services
         readonly UserManager<AppUser> _userManager;
         readonly ITokenHandler _tokenHandler;
         readonly SignInManager<AppUser> _signInManager;
+        readonly IUserService _userService;
 
-        public AuthService(IHttpClientFactory httpClientFactory, IConfiguration configuration, UserManager<AppUser> userManager, ITokenHandler tokenHandler, SignInManager<AppUser> signInManager)
+        public AuthService(IHttpClientFactory httpClientFactory, IConfiguration configuration, UserManager<AppUser> userManager, ITokenHandler tokenHandler, SignInManager<AppUser> signInManager, IUserService userService)
         {
             _httpClient = httpClientFactory.CreateClient();
             _configuration = configuration;
             _userManager = userManager;
             _tokenHandler = tokenHandler;
             _signInManager = signInManager;
+            _userService = userService;
         }
-        async Task<Token> CreateUserExternalAsync( AppUser user, string email, string name, UserLoginInfo info, int accessTokenLifeTime)
+        async Task<Token> CreateUserExternalAsync(AppUser user, string email, string name, UserLoginInfo info, int accessTokenLifeTime)
         {
             bool result = user != null;
 
             if (user == null)
-            { 
+            {
                 user = await _userManager.FindByEmailAsync(email);
                 if (user == null)
                 {
@@ -53,6 +56,7 @@ namespace Persistance.Services
                 await _userManager.AddLoginAsync(user, info);
 
                 Token token = _tokenHandler.CreateAccessToken(accessTokenLifeTime);
+                await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 10);
                 return token;
             }
             throw new Exception("Invalid external authentification");
@@ -77,8 +81,8 @@ namespace Persistance.Services
 
                 AppUser? user = await _userManager.FindByLoginAsync(userLoginInfo.LoginProvider, userLoginInfo.ProviderKey);
 
-               return await CreateUserExternalAsync(user, response.Email, response.Name, userLoginInfo, accessTokenLifeTime);
-                
+                return await CreateUserExternalAsync(user, response.Email, response.Name, userLoginInfo, accessTokenLifeTime);
+
             }
             throw new Exception("Invalid external authentification");
 
@@ -112,10 +116,24 @@ namespace Persistance.Services
             if (result.Succeeded)
             {
                 Token token = _tokenHandler.CreateAccessToken(accessTokenLifetime);
+                await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 10);
                 return token;
-                
+
             }
             throw new AuthentificationErrorException();
+        }
+
+        public async Task<Token> RefreshTokenLoginAsync(string refreshToken)
+        {
+            AppUser? user = await _userManager.Users.FirstOrDefaultAsync(user => user.RefreshToken == refreshToken);
+            if (user is not null && user?.RefreshTokenEndDate > DateTime.UtcNow)
+            {
+                Token token = _tokenHandler.CreateAccessToken(15);
+                await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 15);
+                return token;
+            }
+            else
+                throw new NotFoundUserException();
         }
     }
 }

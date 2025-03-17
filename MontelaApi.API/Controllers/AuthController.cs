@@ -1,6 +1,7 @@
 ﻿using Application.Features.Commands.User.FacebookLogin;
 using Application.Features.Commands.User.GoogleLogin;
 using Application.Features.Commands.User.LoginUser;
+using Application.Features.Commands.User.RefreshTokenLogin;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +22,13 @@ namespace MontelaApi.API.Controllers
         public async Task<IActionResult> Login(LoginUserCommandRequest loginUserCommandRequest)
         {
             LoginUserCommandResponse response = await _mediator.Send(loginUserCommandRequest);
+            return Ok(response);
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> RefreshTokenLogin([FromBody]RefreshTokenLoginCommandRequest refreshTokenLoginCommand)
+        {
+            RefreshTokenLoginCommandResponse response = await _mediator.Send(refreshTokenLoginCommand);
             return Ok(response);
         }
 
