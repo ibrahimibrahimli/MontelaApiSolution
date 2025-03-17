@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions;
+using Application.Abstractions.Services;
 using Application.DTOs;
 using Application.Exceptions.User;
 using Domain.Entities.Identity;
@@ -9,37 +10,20 @@ namespace Application.Features.Commands.User.LoginUser
 {
     public class LoginUserCommandHandler : IRequestHandler<LoginUserCommandRequest, LoginUserCommandResponse>
     {
-        private readonly UserManager<AppUser> _userManager;
-        private readonly SignInManager<AppUser> _signInManager;
-        private readonly ITokenHandler _tokenHandler;
+        readonly IAuthService _authService;
 
-        public LoginUserCommandHandler(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, ITokenHandler tokenHandler)
+        public LoginUserCommandHandler(IAuthService authService)
         {
-            _signInManager = signInManager;
-            _userManager = userManager;
-            _tokenHandler = tokenHandler;
+            _authService = authService;
         }
 
         public async Task<LoginUserCommandResponse> Handle(LoginUserCommandRequest request, CancellationToken cancellationToken)
         {
-            AppUser user = await _userManager.FindByNameAsync(request.UsernameOrEmail);
-            if (user == null)
-                user = await _userManager.FindByEmailAsync(request.UsernameOrEmail);
-
-            if (user == null)
-                throw new NotFoundUserException();
-
-            SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
-
-            if (result.Succeeded) 
+            Token token = await _authService.LoginAsync(request.UsernameOrEmail, request.Password, 15);
+            return new LoginUserSuccessCommandResponse()
             {
-                Token token = _tokenHandler.CreateAccessToken(5);
-                return new LoginUserSuccessCommandResponse()
-                {
-                    Token = token
-                };
-            }
-            throw new AuthentificationErrorException();
+                Token = token
+            };
         }
     }
 }

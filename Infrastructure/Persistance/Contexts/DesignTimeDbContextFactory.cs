@@ -2,27 +2,25 @@
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using Persistance.Context;
+using System.IO;
 
 namespace Persistance.Contexts
 {
     internal class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
     {
-        private readonly IConfiguration _configuration;
-
-        public DesignTimeDbContextFactory()
-        {
-            
-        }
-        public DesignTimeDbContextFactory(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
         public ApplicationDbContext CreateDbContext(string[] args)
         {
-            DbContextOptionsBuilder<ApplicationDbContext> dbContextOptionsBuilder = new();
-            dbContextOptionsBuilder.UseSqlServer(_configuration.GetConnectionString("SqlServer"));
-            return new(dbContextOptionsBuilder.Options); 
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+
+            var connectionString = configuration.GetConnectionString("SqlServer");
+
+            DbContextOptionsBuilder<ApplicationDbContext> optionsBuilder = new();
+            optionsBuilder.UseSqlServer(connectionString);
+
+            return new ApplicationDbContext(optionsBuilder.Options);
         }
     }
 }

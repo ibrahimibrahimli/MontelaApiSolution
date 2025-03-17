@@ -1,4 +1,6 @@
-﻿using Application.Repositories;
+﻿using Application.Abstractions.Services;
+using Application.Abstractions.Services.Authentification;
+using Application.Repositories;
 using Domain.Entities.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +10,7 @@ using Persistance.Repositories;
 using Persistance.Repositories.File;
 using Persistance.Repositories.Invoice;
 using Persistance.Repositories.ProductImage;
+using Persistance.Services;
 
 namespace Persistance
 {
@@ -37,6 +40,11 @@ namespace Persistance
             services.AddScoped<IFileWriteRepository, FileWriteRepository>();
             services.AddScoped<IInvoiceWriteRepository, InvoiceWriteRepository>();
             services.AddScoped<IInvoiceReadRepository, InvoiceReadRepository>();
+
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IExternalAuthentification, AuthService>();
+            services.AddScoped<IInternalAuthentification, AuthService>();
         }
     }
 }
