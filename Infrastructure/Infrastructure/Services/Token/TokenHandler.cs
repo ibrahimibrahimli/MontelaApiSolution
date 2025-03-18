@@ -18,12 +18,12 @@ namespace Infrastructure.Services
         {
             _configuration = configuration;
         }
-        public Token CreateAccessToken(int second, AppUser user)
+        public Token CreateAccessToken(int minute, AppUser user)
         {
             Token token = new Token();
             SymmetricSecurityKey symmetricSecurityKey = new(Encoding.UTF8.GetBytes(_configuration["JWTToken:SecurityKey"]));
             SigningCredentials signingCredentials = new(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
-            token.Expiration = DateTime.UtcNow.AddSeconds(second);
+            token.Expiration = DateTime.UtcNow.AddMinutes(minute);
             JwtSecurityToken jwtSecurityToken = new(
                 audience : _configuration["JWTToken:Audience"],
                 issuer : _configuration["JWTToken:Issuer"],
