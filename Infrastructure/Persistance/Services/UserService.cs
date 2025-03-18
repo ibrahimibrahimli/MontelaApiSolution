@@ -46,7 +46,7 @@ namespace Persistance.Services
             if (user is not null)
             {
                 user.RefreshToken = refreshToken;
-                user.RefreshTokenEndDate = accessTokenDate.AddSeconds(addOnAccessTokenTime);
+                user.RefreshTokenEndDate = accessTokenDate.AddMinutes(addOnAccessTokenTime);
                 await _userManager.UpdateAsync(user);
             }
             else

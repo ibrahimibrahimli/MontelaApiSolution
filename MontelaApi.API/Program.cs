@@ -17,6 +17,7 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.Text;
 using MontelaApi.API.Extensions;
+using SignalR;
 namespace MontelaApi.API
 {
     public class Program
@@ -30,6 +31,7 @@ namespace MontelaApi.API
             builder.Services.AddPersistanceServices(builder.Configuration);
             builder.Services.AddInfrastructureServices();
             builder.Services.AddApplicationServices();
+            builder.Services.AddSignalRServices();
 
 
             builder.Services.AddStorage<AzureStorage>();
@@ -66,6 +68,7 @@ namespace MontelaApi.API
 
             builder.Services.AddCors(options => options.AddDefaultPolicy(
                 policy =>policy.WithOrigins("http://localhost:4200", "https://localhost:4200")
+                .AllowCredentials()
                 .AllowAnyHeader()
                 .AllowAnyMethod()
             ));
@@ -137,6 +140,7 @@ namespace MontelaApi.API
 
 
             app.MapControllers();
+            app.MapHubs();
 
             app.Run();
         }
