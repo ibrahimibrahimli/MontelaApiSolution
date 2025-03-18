@@ -16,6 +16,7 @@ using Serilog.Sinks.MSSqlServer;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Text;
+using MontelaApi.API.Extensions;
 namespace MontelaApi.API
 {
     public class Program
@@ -116,6 +117,8 @@ namespace MontelaApi.API
                     .WithTheme(ScalarTheme.Purple)
                     .WithDefaultHttpClient(ScalarTarget.JavaScript, ScalarClient.Axios);
             });
+
+            app.ConfigureExceptionHandler(app.Services.GetRequiredService<ILogger<Program>>());
             app.UseStaticFiles();
 
             app.UseCors();
