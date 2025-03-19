@@ -1,6 +1,7 @@
 ﻿using Application.Features.Commands.Product.CreateProduct;
 using Application.Features.Commands.Product.RemoveProduct;
 using Application.Features.Commands.Product.UpdateProduct;
+using Application.Features.Commands.ProductImageFile.ChangeShowCaseImage;
 using Application.Features.Commands.ProductImageFile.RemoveProductImage;
 using Application.Features.Commands.ProductImageFile.UploadProductImage;
 using Application.Features.Queries.Product.GetAllProduct;
@@ -15,7 +16,6 @@ namespace MontelaApi.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = "Admin")]
     public class ProductsController : ControllerBase
     {
        
@@ -41,7 +41,7 @@ namespace MontelaApi.API.Controllers
         }
 
         [HttpPost]
-
+        [Authorize(AuthenticationSchemes = "Admin")]
         public async Task<IActionResult> Post(CreateProductCommandRequest createProductCommandRequest)
         {
 
@@ -51,7 +51,7 @@ namespace MontelaApi.API.Controllers
         }
 
         [HttpPut]
-
+        [Authorize(AuthenticationSchemes = "Admin")]
         public async Task<IActionResult> Put([FromBody]UpdateProductCommandRequest updateProductCommandRequest)
         {
             UpdateProductCommandResponse response = await _mediator.Send(updateProductCommandRequest);
@@ -59,6 +59,7 @@ namespace MontelaApi.API.Controllers
         }
 
         [HttpDelete("{Id}")]
+        [Authorize(AuthenticationSchemes = "Admin")]
         public async Task<IActionResult> Delete([FromRoute]RemoveProductCommandRequest removeProductCommandRequest)
         {
             RemoveProductCommandResponse response = await _mediator.Send(removeProductCommandRequest);
@@ -66,6 +67,7 @@ namespace MontelaApi.API.Controllers
         }
 
         [HttpPost("[action]")]
+        [Authorize(AuthenticationSchemes = "Admin")]
         public async Task<IActionResult> Upload([FromQuery] UploadProductImageCommandRequest uploadProductImageCommandRequest)
         {
             uploadProductImageCommandRequest.Files = Request.Form.Files;
@@ -81,11 +83,21 @@ namespace MontelaApi.API.Controllers
         }
 
         [HttpDelete("[action]/{Id}")]
+        [Authorize(AuthenticationSchemes = "Admin")]
         public async Task<IActionResult> DeleteProductImage([FromRoute]RemoveProductImageCommandRequest removeProductImageCommandRequest, [FromQuery] string imageId )
         {
             removeProductImageCommandRequest.ImageId = imageId;
             RemoveProductImageCommandResponse response = await _mediator.Send(removeProductImageCommandRequest );
              return Ok();
+        }
+
+        [HttpGet("[action]")]
+        [Authorize(AuthenticationSchemes = "Admin")]
+        public async Task<IActionResult> ChangeShowImage ([FromQuery]ChangeShowCaseImageCommandRequest changeShowCaseImageCommandRequest)
+        {
+            ChangeShowCaseImageCommandResponse response = await _mediator.Send(changeShowCaseImageCommandRequest);
+
+            return Ok(response);
         }
     }
 }

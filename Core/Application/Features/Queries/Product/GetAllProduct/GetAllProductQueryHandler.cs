@@ -3,6 +3,7 @@ using Application.Repositories;
 using MediatR;
 using Application.DTOs;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Features.Queries.Product.GetAllProduct
 {
@@ -23,6 +24,7 @@ namespace Application.Features.Queries.Product.GetAllProduct
             List<ProductDto> products = _productReadRepository.GetAll(false)
                 .Skip(request.Page * request.Size)
                 .Take(request.Size)
+                .Include(p => p.ProductImages)
                 .Select(p => new ProductDto
                 {
                     Id = p.Id,
@@ -31,6 +33,7 @@ namespace Application.Features.Queries.Product.GetAllProduct
                     Price = p.Price,
                     CreatedDate = p.CreatedDate,
                     UpdatedDate = p.UpdatedDate,
+                    ProductImages = p.ProductImages
                 }).ToList();
 
 

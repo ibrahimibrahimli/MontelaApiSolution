@@ -34,7 +34,7 @@ namespace Persistance
             services.AddScoped<IOrderWriteRepository, OrderWriteRepository>();
             services.AddScoped<IProductReadRepository, ProductReadRepository>();
             services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
-            services.AddScoped<IProductImageReadRepository, ProductImageReadRepository>();
+            services.AddScoped<IProductImageFileWriteRepository, ProductImageReadRepository>();
             services.AddScoped<IProductImageWriteRepository, ProductImageWriteRepository>();
             services.AddScoped<IFileReadRepository, FileReadRepository>();
             services.AddScoped<IFileWriteRepository, FileWriteRepository>();

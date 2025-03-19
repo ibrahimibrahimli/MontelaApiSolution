@@ -2,7 +2,7 @@
 
 namespace Application.Repositories
 {
-    public interface IProductImageReadRepository : IReadRepository<ProductImageFile>
+    public interface IProductImageFileWriteRepository : IWriteRepository<ProductImageFile>
     {
     }
 }
