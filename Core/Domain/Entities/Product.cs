@@ -9,6 +9,7 @@ namespace Domain.Entities
         public float Price { get; set; }
         public ICollection<Order> Orders { get; set; }
         public ICollection<ProductImageFile> ProductImages { get; set; }
+        public ICollection<BasketItem> BasketItems { get; set; }
 
     }
 }

@@ -6,9 +6,9 @@ namespace Application.Features.Commands.ProductImageFile.ChangeShowCaseImage
 {
     public class ChangeShowCaseImageCommandHandler : IRequestHandler<ChangeShowCaseImageCommandRequest, ChangeShowCaseImageCommandResponse>
     {
-        readonly IProductImageFileWriteRepository _productImageFileWriteRepository;
+        readonly IProductImageWriteRepository _productImageFileWriteRepository;
 
-        public ChangeShowCaseImageCommandHandler(IProductImageFileWriteRepository productImageWriteRepository)
+        public ChangeShowCaseImageCommandHandler(IProductImageWriteRepository productImageWriteRepository)
         {
             _productImageFileWriteRepository = productImageWriteRepository;
         }
@@ -23,7 +23,7 @@ namespace Application.Features.Commands.ProductImageFile.ChangeShowCaseImage
                 });
 
             var data = await query.FirstOrDefaultAsync(p => p.product.Id == Guid.Parse(request.ProductId) && p.productImageFile.ShowCase);
-            if ((data))
+            if ((data != null))
             {
             data.productImageFile.ShowCase = false;
             }

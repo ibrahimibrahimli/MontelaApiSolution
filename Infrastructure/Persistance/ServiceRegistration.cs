@@ -20,11 +20,11 @@ namespace Persistance
         {
             services.AddIdentity<AppUser, AppRole>(options =>
             {
-                options.Password.RequireNonAlphanumeric= false;
+                options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequiredLength = 6;
-                options.Password.RequireUppercase= false;
-                options.Password.RequireLowercase= false;
-                options.Password.RequireDigit= false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireDigit = false;
             }).AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("SqlServer")));
@@ -34,12 +34,17 @@ namespace Persistance
             services.AddScoped<IOrderWriteRepository, OrderWriteRepository>();
             services.AddScoped<IProductReadRepository, ProductReadRepository>();
             services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
-            services.AddScoped<IProductImageFileWriteRepository, ProductImageReadRepository>();
+            services.AddScoped<IProductImageReadRepository, ProductImageReadRepository>();
             services.AddScoped<IProductImageWriteRepository, ProductImageWriteRepository>();
             services.AddScoped<IFileReadRepository, FileReadRepository>();
             services.AddScoped<IFileWriteRepository, FileWriteRepository>();
             services.AddScoped<IInvoiceWriteRepository, InvoiceWriteRepository>();
             services.AddScoped<IInvoiceReadRepository, InvoiceReadRepository>();
+
+            services.AddScoped<IBasketItemReadRepository, BasketItemReadRepository>();
+            services.AddScoped<IBasketItemWriteRepository, BasketItemWriteRepository>();
+            services.AddScoped<IBasketReadRepository, BasketReadRepository>();
+            services.AddScoped<IBasketWriteRepository, BasketWriteRepository>();
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthService, AuthService>();
