@@ -40,7 +40,6 @@ namespace Persistance
             services.AddScoped<IFileWriteRepository, FileWriteRepository>();
             services.AddScoped<IInvoiceWriteRepository, InvoiceWriteRepository>();
             services.AddScoped<IInvoiceReadRepository, InvoiceReadRepository>();
-
             services.AddScoped<IBasketItemReadRepository, BasketItemReadRepository>();
             services.AddScoped<IBasketItemWriteRepository, BasketItemWriteRepository>();
             services.AddScoped<IBasketReadRepository, BasketReadRepository>();
@@ -50,6 +49,9 @@ namespace Persistance
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IExternalAuthentification, AuthService>();
             services.AddScoped<IInternalAuthentification, AuthService>();
+
+            services.AddScoped<IBasketService, BasketService>();
+
         }
     }
 }

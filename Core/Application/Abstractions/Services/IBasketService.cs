@@ -8,6 +8,6 @@ namespace Application.Abstractions.Services
         public Task<List<BasketItem>> GetBasketItems();
         public Task AddItemToBasketAsync(CreateBasketItems basketItem );
         public Task UpdateQuantityAsync(UpdateBasketItem basketItem );
-        public Task RemoveBasketItemAsync(string basketItemId)
+        public Task RemoveBasketItemAsync(string basketItemId);
     }
 }

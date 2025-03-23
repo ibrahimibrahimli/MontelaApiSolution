@@ -2,7 +2,7 @@
 
 namespace Application.Repositories
 {
-    public interface IBasketItemWriteRepository : IWriteRepository<BasketItem
+    public interface IBasketItemWriteRepository : IWriteRepository<BasketItem>
     {
     }
 }
