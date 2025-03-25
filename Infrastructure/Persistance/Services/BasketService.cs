@@ -115,5 +115,15 @@ namespace Persistance.Services
                 await _basketItemWriteRepository.SaveAsync();
             }
         }
+
+        public Basket? GetUserActiveBasket
+        {
+            get
+            {
+                Basket? basket = GetContextUserBasket().Result;
+                return basket;
+            }
+        }
+
     }
 }
