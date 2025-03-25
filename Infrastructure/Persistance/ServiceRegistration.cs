@@ -51,6 +51,7 @@ namespace Persistance
             services.AddScoped<IInternalAuthentification, AuthService>();
 
             services.AddScoped<IBasketService, BasketService>();
+            services.AddScoped<IOrderService, OrderService>();
 
         }
     }

@@ -9,5 +9,6 @@ namespace Application.Abstractions.Services
         public Task AddItemToBasketAsync(CreateBasketItems basketItem );
         public Task UpdateQuantityAsync(UpdateBasketItem basketItem );
         public Task RemoveBasketItemAsync(string basketItemId);
+        public Basket? GetUserActiveBasket { get; }
     }
 }

@@ -7,7 +7,7 @@ namespace Application.Validators
     {
         public OrderValidation()
         {
-            RuleFor(o => o.Address).NotEmpty()
+            RuleFor(o => o.Adress).NotEmpty()
                 .NotNull();
         }
     }
