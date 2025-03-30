@@ -7,7 +7,7 @@ namespace Domain.Entities
         public string Description { get; set; }
         public string Adress { get; set; }
         public virtual Basket Basket { get; set; }
-
+        public string OrderNumber { get; set; }
 
         //public virtual Customer Customer { get; set; }
 
