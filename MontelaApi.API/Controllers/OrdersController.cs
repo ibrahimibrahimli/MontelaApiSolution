@@ -29,7 +29,7 @@ namespace MontelaApi.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllOrders([FromQuery]GetAllOrdersQueryRequest request)
         {
-            List<GetAllOrdersQueryResponse> response = await _mediator.Send(request);
+            GetAllOrdersQueryResponse response = await _mediator.Send(request);
             return Ok(response);
         }
     }
