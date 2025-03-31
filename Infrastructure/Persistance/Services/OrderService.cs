@@ -32,7 +32,6 @@ namespace Persistance.Services
             });
             await _orderWriteRepository.SaveAsync();
         }
-
         public async Task<ListOrderDto> GetAllOrdersAsync(int page, int size)
         {
             var query = _orderReadRepository.Table
@@ -49,11 +48,26 @@ namespace Persistance.Services
                 OrderCount = await query.CountAsync(),
                 Orders = await data.Select(o => new
                 {
+                    Id = o.Id,
                     CreatedDate = o.CreatedDate,
                     OrderNumber = o.OrderNumber,
                     TotalPrice = o.Basket.BasketItems.Sum(bi => bi.Product.Price * bi.Quantity),
                     Username = o.Basket.User.UserName
                 }).ToListAsync()
+            };
+        }
+
+        public async Task<OrderDto> GetOrderByIdAsync(string id)
+        {
+            var data = await _orderReadRepository.Table
+                .Include(o => o.Basket)
+                .ThenInclude(b => b.BasketItems)
+                .ThenInclude(bi => bi.Product)
+                .FirstOrDefaultAsync(o => o.Id == Guid.Parse(id));
+
+            return new OrderDto
+            {
+               
             };
         }
     }

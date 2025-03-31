@@ -17,8 +17,8 @@ namespace Application.Features.Queries.Order.GetAllOrders
             var data = await _orderService.GetAllOrdersAsync(request.Page , request.Size);
             return new GetAllOrdersQueryResponse()
             {
-                OrderCount = data.Count,
-                Data = data.ToList()
+                OrderCount = data.OrderCount,
+                Data = data.Orders
             };
         }
     }
