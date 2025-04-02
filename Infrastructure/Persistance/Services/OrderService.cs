@@ -1,9 +1,7 @@
 ﻿using Application.Abstractions.Services;
 using Application.DTOs.Order;
 using Application.Repositories;
-using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel;
 
 namespace Persistance.Services
 {
@@ -41,7 +39,7 @@ namespace Persistance.Services
                 .ThenInclude(b => b.BasketItems)
                 .ThenInclude(bi => bi.Product);
 
-                var data =  query.Skip(page * size).Take(size);
+            var data = query.Skip(page * size).Take(size);
 
             return new()
             {
@@ -57,7 +55,7 @@ namespace Persistance.Services
             };
         }
 
-        public async Task<OrderDto> GetOrderByIdAsync(string id)
+        public async Task<OrderDto?> GetOrderByIdAsync(string id)
         {
             var data = await _orderReadRepository.Table
                 .Include(o => o.Basket)
@@ -65,10 +63,26 @@ namespace Persistance.Services
                 .ThenInclude(bi => bi.Product)
                 .FirstOrDefaultAsync(o => o.Id == Guid.Parse(id));
 
-            return new OrderDto
+            if (data is not null)
             {
-               
-            };
+                return new OrderDto
+                {
+                    Id = data.Id,
+                    CreatedDate = data.CreatedDate,
+                    OrderNumber = data.OrderNumber,
+                    Adress = data.Adress,
+                    BasketItems =  data.Basket.BasketItems.Select(bi => new
+                    {
+                        bi.ProductId,
+                        bi.Name,
+                        bi.Price,
+                        bi.Quantity,
+                    }),
+                    Description = data.Description,
+                };
+            }
+            return null;
+
         }
     }
 }

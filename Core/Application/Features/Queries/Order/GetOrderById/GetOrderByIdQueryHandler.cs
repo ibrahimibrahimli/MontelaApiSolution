@@ -12,9 +12,17 @@ namespace Application.Features.Queries.Order.GetOrderById
             _orderService = orderService;
         }
 
-        public Task<GetOrderByIdQueryResponse> Handle(GetOrderByIdQueryRequest request, CancellationToken cancellationToken)
+        public async Task<GetOrderByIdQueryResponse> Handle(GetOrderByIdQueryRequest request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+           var data =  await _orderService.GetOrderByIdAsync(request.Id);
+            return new()
+            {
+                OrderNumber = data.OrderNumber,
+                Adress = data.Adress,
+                Description = data.Description,
+                BasketItems = data.BasketItems,
+                CreatedDate = data.CreatedDate,
+            };
         }
     }
 }
