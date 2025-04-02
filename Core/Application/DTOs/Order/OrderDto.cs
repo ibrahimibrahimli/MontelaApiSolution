@@ -2,7 +2,7 @@
 {
     public class OrderDto
     {
-        public string Id { get; set; }
+        public Guid Id { get; set; }
         public string Adress { get; set; }
         public DateTime CreatedDate { get; set; }
         public object BasketItems{ get; set; }
