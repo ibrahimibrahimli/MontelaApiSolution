@@ -1,7 +1,9 @@
 ﻿using Application.Abstractions;
+using Application.Abstractions.Services;
 using Application.Abstractions.Storage;
 using Infrastructure.Enums;
 using Infrastructure.Services;
+using Infrastructure.Services.MailServices;
 using Infrastructure.Services.Storage;
 using Infrastructure.Services.Storage.Azure;
 using Infrastructure.Services.Storage.Local;
@@ -14,7 +16,8 @@ namespace Infrastructure
         public static void AddInfrastructureServices(this IServiceCollection services)
         {
             services.AddScoped<IStorageService, StorageService>();
-            services.AddScoped<ITokenHandler, TokenHandler>(); 
+            services.AddScoped<ITokenHandler, TokenHandler>();
+            services.AddScoped<IMailService, MailService>();
         }
         public static void AddStorage<T>(this IServiceCollection services) where T : Storage,  IStorage
         {
