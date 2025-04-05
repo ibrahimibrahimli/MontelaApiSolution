@@ -15,12 +15,12 @@ namespace Infrastructure.Services.MailServices
             _configuration = configuration;
         }
 
-        public async Task SendMessageAsync(string to, string subject, string body, bool isBodyHtml = true)
+        public async Task SendMailAsync(string to, string subject, string body, bool isBodyHtml = true)
         {
-            await SendMessageAsync(to, subject, body, isBodyHtml);
+            await SendMailAsync(to, subject, body, isBodyHtml);
         }
 
-        public async Task SendMessageAsync(List<string> to, string subject, string body, bool isBodyHtml = true)
+        public async Task SendMailAsync(List<string> to, string subject, string body, bool isBodyHtml = true)
         {
             MailMessage mail = new MailMessage();
             mail.IsBodyHtml = isBodyHtml;
@@ -37,6 +37,13 @@ namespace Infrastructure.Services.MailServices
             smtp.EnableSsl = true;
             smtp.Host = _configuration["Mail:Host"];
             await smtp.SendMailAsync(mail);
+        }
+
+        public async Task SendPasswordResetMailAsync(string to, string userId, string resetToken)
+        {
+            string resetLink = $"Hi! <br> If you want reset password, yo have a link for reset password <br> <strong> <a target='blank' href='....../{userId}/{resetToken}'></a> Touch for new password </strong> <br><br><br> Montela";
+
+           await SendMailAsync(to, "Reset Password", resetLink);
         }
     }
 }
