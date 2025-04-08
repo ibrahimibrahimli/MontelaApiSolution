@@ -39,9 +39,10 @@ namespace Infrastructure.Services.MailServices
             await smtp.SendMailAsync(mail);
         }
 
-        public async Task SendPasswordResetMailAsync(string to, string userId, string resetToken)
+        public async Task SendResetPasswordMailAsync(string to, string userId, string resetToken)
         {
-            string resetLink = $"Hi! <br> If you want reset password, yo have a link for reset password <br> <strong> <a target='blank' href='....../{userId}/{resetToken}'></a> Touch for new password </strong> <br><br><br> Montela";
+            string clientUrl = _configuration["ClientUrl"];
+            string resetLink = $"Hi! <br> If you want reset password, yo have a link for reset password <br> <strong> <a target='blank' href='{clientUrl}/update-password/{userId}/{resetToken}'></a> Touch for new password </strong> <br><br><br> Montela";
 
            await SendMailAsync(to, "Reset Password", resetLink);
         }
