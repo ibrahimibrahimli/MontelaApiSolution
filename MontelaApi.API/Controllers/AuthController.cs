@@ -2,6 +2,8 @@
 using Application.Features.Commands.User.GoogleLogin;
 using Application.Features.Commands.User.LoginUser;
 using Application.Features.Commands.User.RefreshTokenLogin;
+using Application.Features.Commands.User.ResetPassword;
+using Application.Features.Commands.User.VerifyResetToken;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,6 +45,21 @@ namespace MontelaApi.API.Controllers
         public async Task<IActionResult> FacebookLogin(FacebookLoginCommandRequest facebookLoginCommandRequest)
         {
             FacebookLoginCommandResponse response = await _mediator.Send(facebookLoginCommandRequest);
+            return Ok(response);
+        }
+
+        [HttpPost("reset-password")]
+
+        public async Task<IActionResult> ResetPassword([FromBody]ResetPasswordCommandRequest request)
+        {
+            ResetPasswordCommandResponse response = await _mediator.Send(request);
+            return Ok(response);
+        }
+
+        [HttpPost("verify-resetToken")]
+        public async Task<IActionResult> VerifyResetToken([FromBody] VerifyResetTokenCommandRequest request)
+        {
+            VerifyResetTokenCommandResponse response = await _mediator.Send(request);
             return Ok(response);
         }
     }

@@ -3,10 +3,13 @@ using Application.Abstractions.Services;
 using Application.DTOs;
 using Application.DTOs.Facebook;
 using Application.Exceptions.User;
+using Application.Helpers;
 using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Text;
 using System.Text.Json;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
 
@@ -20,8 +23,9 @@ namespace Persistance.Services
         readonly ITokenHandler _tokenHandler;
         readonly SignInManager<AppUser> _signInManager;
         readonly IUserService _userService;
+        readonly IMailService _mailService;
 
-        public AuthService(IHttpClientFactory httpClientFactory, IConfiguration configuration, UserManager<AppUser> userManager, ITokenHandler tokenHandler, SignInManager<AppUser> signInManager, IUserService userService)
+        public AuthService(IHttpClientFactory httpClientFactory, IConfiguration configuration, UserManager<AppUser> userManager, ITokenHandler tokenHandler, SignInManager<AppUser> signInManager, IUserService userService, IMailService mailService)
         {
             _httpClient = httpClientFactory.CreateClient();
             _configuration = configuration;
@@ -29,6 +33,7 @@ namespace Persistance.Services
             _tokenHandler = tokenHandler;
             _signInManager = signInManager;
             _userService = userService;
+            _mailService = mailService;
         }
         async Task<Token> CreateUserExternalAsync(AppUser user, string email, string name, UserLoginInfo info, int accessTokenLifeTime)
         {
@@ -56,7 +61,7 @@ namespace Persistance.Services
                 await _userManager.AddLoginAsync(user, info);
 
                 Token token = _tokenHandler.CreateAccessToken(accessTokenLifeTime, user);
-                await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 10);
+                await _userService.UpdateRefreshTokenAsync(token.RefreshToken, user, token.Expiration, 10);
                 return token;
             }
             throw new Exception("Invalid external authentification");
@@ -116,7 +121,7 @@ namespace Persistance.Services
             if (result.Succeeded)
             {
                 Token token = _tokenHandler.CreateAccessToken(accessTokenLifetime, user);
-                await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 15);
+                await _userService.UpdateRefreshTokenAsync(token.RefreshToken, user, token.Expiration, 15);
                 return token;
 
             }
@@ -129,11 +134,41 @@ namespace Persistance.Services
             if (user is not null && user?.RefreshTokenEndDate > DateTime.UtcNow)
             {
                 Token token = _tokenHandler.CreateAccessToken(15, user);
-                await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 15);
+                await _userService.UpdateRefreshTokenAsync(token.RefreshToken, user, token.Expiration, 15);
                 return token;
             }
             else
                 throw new NotFoundUserException();
+        }
+
+        public async Task ResetPasswordAsync(string email)
+        {
+            AppUser? user = await _userManager.FindByEmailAsync(email);
+            if (user is not null)
+            {
+                string passwordResetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                //byte[] resetTokenBytes = Encoding.UTF8.GetBytes(passwordResetToken);
+                //passwordResetToken = WebEncoders.Base64UrlEncode(resetTokenBytes);
+
+                string encodedToken = passwordResetToken.UrlEncode();
+
+                await _mailService.SendResetPasswordMailAsync(email, user.Id, encodedToken);
+            }
+        }
+
+        public async Task<bool> VerifyResetTokenAsync(string resetToken, string userId)
+        {
+            AppUser? user = await _userManager.FindByIdAsync(userId);
+            if (user is not null)
+            {
+                //byte[] tokenBytes = WebEncoders.Base64UrlDecode(resetToken);
+                //string decodedToken = Encoding.UTF8.GetString(tokenBytes);
+                string decodedToken = resetToken.UrlDecode();
+
+                return await _userManager.VerifyUserTokenAsync(user, _userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", decodedToken);
+            }
+            return false;
         }
     }
 }

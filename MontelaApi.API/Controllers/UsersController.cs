@@ -1,4 +1,5 @@
 ﻿using Application.Features.Commands.User.CreateUser;
+using Application.Features.Commands.User.UpdatePassword;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,6 +21,13 @@ namespace MontelaApi.API.Controllers
         {
             CreateUserCommandResponse response = await _mediator.Send(createUserCommandRequest);
             return Ok(response);
+        }
+
+        [HttpPost("update-password")]
+        public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordCommandRequest request)
+        {
+            UpdatePasswordCommandResponse response = await _mediator.Send(request);
+            return Ok();
         }
     }
 }
