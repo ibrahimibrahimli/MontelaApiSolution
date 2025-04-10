@@ -8,11 +8,6 @@ namespace Domain.Entities
         public string Adress { get; set; }
         public virtual Basket Basket { get; set; }
         public string OrderNumber { get; set; }
-
-        //public virtual Customer Customer { get; set; }
-
-        //public Guid CustomerId { get; set; }
-
-        //public ICollection<Product> Products { get; set; }
+        public virtual CompletedOrder CompletedOrder { get; set; }
     }
 }
