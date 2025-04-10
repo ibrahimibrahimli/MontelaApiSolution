@@ -40,5 +40,11 @@ namespace MontelaApi.API.Controllers
             GetOrderByIdQueryResponse response = await _mediator.Send(request);
             return Ok(response);
         }
+
+        [HttpGet("complete-order/{id}")]
+        public async Task<IActionResult> CompletedOrder()
+        {
+            return Ok();
+        }
     }
 }
