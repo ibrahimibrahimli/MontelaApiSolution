@@ -7,5 +7,7 @@
         public object BasketItems { get; set; }
         public string Description { get; set; }
         public string OrderNumber { get; set; }
+        public bool Completed { get; set; }
+         
     }
 }

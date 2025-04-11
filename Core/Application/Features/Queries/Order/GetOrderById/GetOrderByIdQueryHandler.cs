@@ -22,6 +22,7 @@ namespace Application.Features.Queries.Order.GetOrderById
                 Description = data.Description,
                 BasketItems = data.BasketItems,
                 CreatedDate = data.CreatedDate,
+                Completed = data.Completed,
             };
         }
     }
