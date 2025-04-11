@@ -1,4 +1,5 @@
-﻿using Application.Features.Commands.Order.CreateOrder;
+﻿using Application.Features.Commands.CompleteOrder;
+using Application.Features.Commands.Order.CreateOrder;
 using Application.Features.Queries.Order.GetAllOrders;
 using Application.Features.Queries.Order.GetOrderById;
 using MediatR;
@@ -42,9 +43,10 @@ namespace MontelaApi.API.Controllers
         }
 
         [HttpGet("complete-order/{id}")]
-        public async Task<IActionResult> CompletedOrder()
+        public async Task<IActionResult> CompletedOrder([FromRoute]CompleteOrderCommandRequest request)
         {
-            return Ok();
+            CompleteOrderCommandResponse response = await _mediator.Send(request);
+            return Ok(response);
         }
     }
 }

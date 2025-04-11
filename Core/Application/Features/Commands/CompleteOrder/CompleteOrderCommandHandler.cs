@@ -12,9 +12,10 @@ namespace Application.Features.Commands.CompleteOrder
             _orderService = orderService;
         }
 
-        public Task<CompleteOrderCommandResponse> Handle(CompleteOrderCommandRequest request, CancellationToken cancellationToken)
+        public async Task<CompleteOrderCommandResponse> Handle(CompleteOrderCommandRequest request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            await _orderService.CompleteOrderAsync(request.Id);
+            return new();
         }
     }
 }
