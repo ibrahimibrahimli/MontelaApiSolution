@@ -7,6 +7,6 @@ namespace Application.Abstractions.Services
         Task CreateOrderAsync(CreateOrderDto order);
         Task<ListOrderDto> GetAllOrdersAsync(int page, int size);
         Task<OrderDto> GetOrderByIdAsync(string id);
-        Task CompleteOrderAsync(string id);
+        Task<(bool, CompletedOrderDto)> CompleteOrderAsync(string id);
     }
 }

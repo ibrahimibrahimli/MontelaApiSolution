@@ -15,6 +15,14 @@ namespace Infrastructure.Services.MailServices
             _configuration = configuration;
         }
 
+        public async Task SendCompletedOrderMailAsync(string to, string orderNumber, DateTime orderDate)
+        {
+            string message = $"Salam," +
+                $"{orderDate} tarixində verdiyiniz {orderNumber} nömrəli sifarişiniz təsdiqlənmişdir";
+
+            await SendMailAsync(to, $"{orderNumber}  nömrəli sifarişiniz tamamlandı", message);
+        }
+
         public async Task SendMailAsync(string to, string subject, string body, bool isBodyHtml = true)
         {
             await SendMailAsync(to, subject, body, isBodyHtml);
