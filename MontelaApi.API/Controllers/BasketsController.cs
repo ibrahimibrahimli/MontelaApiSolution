@@ -1,4 +1,6 @@
-﻿using Application.Features.Commands.Basket.AddItemToBasket;
+﻿using Application.Attributes;
+using Application.Constants;
+using Application.Features.Commands.Basket.AddItemToBasket;
 using Application.Features.Commands.Basket.RemoveBasketItem;
 using Application.Features.Commands.Basket.UpdateBasketItemQuantity;
 using Application.Features.Queries.Basket.GetBasketItems;
@@ -21,6 +23,7 @@ namespace MontelaApi.API.Controllers
         }
 
         [HttpGet]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Baskets, ActionType = Application.Enums.ActionType.Reading, Definition ="Get Basket Items")]
         public async Task<IActionResult> GetBasketItems([FromQuery]GetBasketItemsQueryRequest request)
         {
             List<GetBasketItemsQueryResponse> response = await _mediator.Send(request);
@@ -28,6 +31,7 @@ namespace MontelaApi.API.Controllers
         }
 
         [HttpPost]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Baskets, ActionType = Application.Enums.ActionType.Writing, Definition = "Add Item to Basket")]
         public async Task<IActionResult> AddItemToBasket(AddItemToBasketCommandRequest request)
         {
             AddItemToBasketCommandResponse response = await _mediator.Send(request);
@@ -35,6 +39,7 @@ namespace MontelaApi.API.Controllers
         }
 
         [HttpPut]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Baskets, ActionType = Application.Enums.ActionType.Updating, Definition = "Update Quantity")]
         public async Task<IActionResult> UpdateQuantity(UpdateBasketItemQuantityCommandRequest request)
         {
             UpdateBasketItemQuantityCommandResponse response = await _mediator.Send(request);
@@ -42,6 +47,7 @@ namespace MontelaApi.API.Controllers
         }
 
         [HttpDelete("{BasketItemId}")]
+        [AuthorizeDefinition(Menu = AuthorizeDefinitionConstants.Baskets, ActionType = Application.Enums.ActionType.Deleting, Definition = "Remove Basket Item")]
         public async Task<IActionResult> RemoveBasketItem([FromRoute]RemoveBasketItemCommandRequest request)
         {
             RemoveBasketItemCommandResponse response = await _mediator.Send(request);
