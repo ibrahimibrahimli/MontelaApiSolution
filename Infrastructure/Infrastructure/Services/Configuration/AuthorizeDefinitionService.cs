@@ -11,7 +11,7 @@ namespace Infrastructure.Services.Configuration
 {
     public class AuthorizeDefinitionService : IAuthorizeDefinitionService
     {
-        public List<Menu> GetAuthorizeDefinitionEndpoint(Type type)
+        public List<Menu> GetAuthorizeDefinitionEndpoints(Type type)
         {
             Assembly assembly = Assembly.GetAssembly(type);
 
@@ -41,7 +41,7 @@ namespace Infrastructure.Services.Configuration
                                 else
                                     menu = menus.FirstOrDefault(m => m.Name == authorizeDefinitionAttribute.Menu);
 
-                                Application.DTOs.Configuration.Action _action = new()
+                                Application.DTOs.Configuration.Action _action = new Application.DTOs.Configuration.Action()
                                 {
                                     ActionType =  Enum.GetName(typeof(ActionType), authorizeDefinitionAttribute.ActionType),
                                     Definition = authorizeDefinitionAttribute.Definition,
@@ -64,5 +64,6 @@ namespace Infrastructure.Services.Configuration
 
             return menus;
         }
+
     }
 }
