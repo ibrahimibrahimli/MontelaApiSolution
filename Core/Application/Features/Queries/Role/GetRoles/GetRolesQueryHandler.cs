@@ -14,10 +14,11 @@ namespace Application.Features.Queries.Role.GetRoles
 
         public async Task<GetRolesQueryResponse> Handle(GetRolesQueryRequest request, CancellationToken cancellationToken)
         {
-            var result = _roleService.GetAllRoles();
+            var result = _roleService.GetAllRoles(request.Page, request.Size);
             return new()
             {
                 Datas = result,
+                TotalRoleCount = result.Count,
             };
         }
     }
