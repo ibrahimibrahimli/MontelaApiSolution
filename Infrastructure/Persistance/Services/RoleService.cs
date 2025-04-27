@@ -16,7 +16,7 @@ namespace Persistance.Services
 
         public async Task<bool> CreateRoleAsync(string roleName)
         {
-            IdentityResult result =  await _roleManager.CreateAsync(new AppRole { Name = roleName });
+            IdentityResult result =  await _roleManager.CreateAsync(new AppRole {Id = Guid.NewGuid().ToString(), Name = roleName });
             return result.Succeeded;
         }
 
@@ -26,9 +26,9 @@ namespace Persistance.Services
             return result.Succeeded;
         }
 
-        public IDictionary<string, string> GetAllRoles()
+        public IDictionary<string, string> GetAllRoles(int page, int size)
         {
-            return _roleManager.Roles.ToDictionary(role => role.Id, role => role.Name);  
+            return _roleManager.Roles.Skip(page * size).Take(size).ToDictionary(role => role.Id, role => role.Name);  
         }
 
         public async Task<(string id, string name)> GetRoleById(string id)
