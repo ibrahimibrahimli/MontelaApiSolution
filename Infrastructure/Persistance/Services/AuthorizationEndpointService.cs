@@ -35,12 +35,32 @@ namespace Persistance.Services
                     Name = menu
                 });
             }
+            await _menuWriteRepository.SaveAsync();
 
            Endpoint? endpoint = await _endpointReadRepository.Table.Include(e => e.Menu).FirstOrDefaultAsync(e => e.Code == endpointCode &&  e.Menu.Name == menu);
             if(endpoint is null)
             {
-                _authorizeDefinitionService.GetAuthorizeDefinitionEndpoints(type).FirstOrDefault(m => m.Name == menu);
+                var action = _authorizeDefinitionService.GetAuthorizeDefinitionEndpoints(type)?
+                    .FirstOrDefault(m => m.Name == menu)?
+                    .Actions.FirstOrDefault(e => e.Code == endpointCode);
+
+                endpoint = new()
+                {
+                    Code = endpointCode,
+                    ActionType = action.ActionType,
+                    HttpType = action.HttpType,
+                    Definition = action.Definition,
+                    Id = Guid.NewGuid(),
+                };
             }
+            await _endpointWriteRepository.AddAsync(endpoint);
+            await _endpointWriteRepository.SaveAsync();
+
+            foreach (var role in roles)
+                endpoint.Roles.Add(new()
+                {
+
+                });
         }
     }
 }
