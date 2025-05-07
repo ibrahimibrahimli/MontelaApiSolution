@@ -2,6 +2,6 @@
 {
     public interface IAuthorizationEndpointService
     {
-        public Task AssignROleEndpointAsync(string[] roles, string endpointCode);
+        public Task AssignRoleEndpointAsync(string[] roles, string endpointCode, Type type, string menu);
     }
 }
