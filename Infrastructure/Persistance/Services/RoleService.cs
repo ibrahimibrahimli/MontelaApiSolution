@@ -26,9 +26,19 @@ namespace Persistance.Services
             return result.Succeeded;
         }
 
-        public IDictionary<string, string> GetAllRoles(int page, int size)
+        public (object, int) GetAllRoles(int page, int size)
         {
-            return _roleManager.Roles.Skip(page * size).Take(size).ToDictionary(role => role.Id, role => role.Name);  
+            var query = _roleManager.Roles;
+
+            IQueryable<AppRole> rolesQuery = null;
+            if (page != -1 && size != -1)
+            {
+                rolesQuery = _roleManager.Roles.Skip(page * size).Take(size);
+            }
+            else
+                rolesQuery = query;
+
+            return (rolesQuery.Select(r => new {r.Id, r.Name}), query.Count());  
         }
 
         public async Task<(string id, string name)> GetRoleById(string id)
