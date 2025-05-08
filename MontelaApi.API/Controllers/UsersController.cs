@@ -1,7 +1,11 @@
-﻿using Application.Features.Commands.User.CreateUser;
+﻿using Application.Attributes;
+using Application.Features.Commands.User.CreateUser;
 using Application.Features.Commands.User.UpdatePassword;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Application.Enums;
+using Application.Features.Queries.AppUser.GetAllUsers;
 
 namespace MontelaApi.API.Controllers
 {
@@ -28,6 +32,15 @@ namespace MontelaApi.API.Controllers
         {
             UpdatePasswordCommandResponse response = await _mediator.Send(request);
             return Ok();
+        }
+
+        [HttpGet]
+        [Authorize(AuthenticationSchemes ="Admin")]
+        [AuthorizeDefinition(ActionType = ActionType.Reading, Definition = "Get all users", Menu ="Users")]
+        public async Task<IActionResult> GetAllUsers([FromQuery]GetAllUsersQueryRequest request)
+        {
+            GetAllUsersQueryResponse response = await _mediator.Send(request);
+            return Ok(response);
         }
     }
 }

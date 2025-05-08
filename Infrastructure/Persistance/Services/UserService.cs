@@ -6,6 +6,7 @@ using Application.Helpers;
 using Azure.Core;
 using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Persistance.Services
 {
@@ -17,6 +18,7 @@ namespace Persistance.Services
         {
             _userManager = userManager;
         }
+
 
         public async Task<CreateUserResponseDto> CreateAsync(CreateUserDto user)
         {
@@ -41,6 +43,21 @@ namespace Persistance.Services
             }
             return response;
         }
+
+        public async Task<List<UserDto>> GetAllUsers(int page, int size)
+        {
+            List<AppUser> users = await _userManager.Users.Skip(page * size).Take(size).ToListAsync();
+            return users.Select(user => new UserDto
+            {
+                Id = user.Id,
+                Fullname = user.FullName,
+                UserName = user.UserName,
+                TwoFactorEnabled = user.TwoFactorEnabled,
+                Email = user.Email,
+            }).ToList();
+        }
+        public int TotalUserCount => _userManager.Users.Count();
+
 
         public async Task UpdatePasswordAsync(string UserId, string resetToken, string newPassword)
         {
