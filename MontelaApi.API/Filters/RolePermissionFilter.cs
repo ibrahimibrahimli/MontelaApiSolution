@@ -1,4 +1,5 @@
-﻿using Application.Attributes;
+﻿using Application.Abstractions.Services;
+using Application.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -9,6 +10,13 @@ namespace MontelaApi.API.Filters
 {
     public class RolePermissionFilter : IAsyncActionFilter
     {
+        readonly IUserService _userService;
+
+        public RolePermissionFilter(IUserService userService)
+        {
+            _userService = userService;
+        }
+
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var name = context.HttpContext.User.Identity?.Name;
@@ -20,14 +28,15 @@ namespace MontelaApi.API.Filters
 
                 var code = $"{(httpMethodAttribute != null ? httpMethodAttribute.HttpMethods.First() : HttpMethods.Get)}.{attribute.ActionType}.{attribute.Definition.Replace(" ", "")}";
 
-                //test
-                var hasRole = true;
+                
+                var hasRole = await _userService.HasRolePermissionToEndpointAsync(name, code);
 
                 if (!hasRole)
                     context.Result = new UnauthorizedResult();
                 else
                     await next();
             }
+            else
             await next();
         }
     }

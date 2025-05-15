@@ -10,7 +10,8 @@ namespace Application.Abstractions.Services
         Task UpdatePasswordAsync(string UserId, string resetToken, string newPassword);
         Task<List<UserDto>> GetAllUsers(int page, int size);
         Task AssignRoleToUser(string userId, string[] roles);
-        Task<List<string>> GetRolesToUserAsync(string userId);
+        Task<List<string>> GetRolesToUserAsync(string userIdOrName);
+        Task<bool> HasRolePermissionToEndpointAsync(string name, string code);
         int TotalUserCount {  get; }
     }
 }
