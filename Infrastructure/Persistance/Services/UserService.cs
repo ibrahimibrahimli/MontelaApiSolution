@@ -1,9 +1,9 @@
 ﻿using Application.Abstractions.Services;
 using Application.DTOs.User;
 using Application.Exceptions.User;
-using Application.Features.Commands.User.CreateUser;
 using Application.Helpers;
-using Azure.Core;
+using Application.Repositories;
+using Domain.Entities;
 using Domain.Entities.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +13,12 @@ namespace Persistance.Services
     public class UserService : IUserService
     {
         readonly UserManager<AppUser> _userManager;
+        readonly IEndpointReadRepository _endpointReadRepository;
 
-        public UserService(UserManager<AppUser> userManager)
+        public UserService(UserManager<AppUser> userManager, IEndpointReadRepository readRepository, IEndpointReadRepository endpointReadRepository)
         {
             _userManager = userManager;
+            _endpointReadRepository = endpointReadRepository;
         }
 
 
@@ -97,15 +99,44 @@ namespace Persistance.Services
             }
         }
 
-        public async Task<List<string>> GetRolesToUserAsync(string userId)
+        public async Task<List<string>> GetRolesToUserAsync(string userIdOrName)
         {
-            AppUser? user = await _userManager.FindByIdAsync(userId);
-            if(user is not null)
+            AppUser? user = await _userManager.FindByIdAsync(userIdOrName);
+            if (user is null)
+            {
+                user = await _userManager.FindByNameAsync(userIdOrName);
+            }
+
+            if (user is not null)
             {
                 var userRoles = await _userManager.GetRolesAsync(user);
                 return userRoles.ToList();
             }
             return null;
+        }
+
+        public async Task<bool> HasRolePermissionToEndpointAsync(string name, string code)
+        {
+            var userRoles = await GetRolesToUserAsync(name);
+            if (!userRoles.Any())
+                return false;
+
+            Endpoint? endpoint = await _endpointReadRepository.Table
+                .Include(e => e.Roles)
+                .FirstOrDefaultAsync(e => e.Code == code);
+            if (endpoint == null)
+                return false;
+
+            var endpointRoles = endpoint.Roles.Select(r => r.Name);
+
+            foreach (var userRole in userRoles)
+            {
+                foreach (var endpointRole in endpointRoles)
+                    if (userRole == endpointRole)
+                        return true;
+
+            }
+            return false;
         }
     }
 }

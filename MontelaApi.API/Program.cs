@@ -18,6 +18,7 @@ using System.Data;
 using System.Text;
 using MontelaApi.API.Extensions;
 using SignalR;
+using MontelaApi.API.Filters;
 namespace MontelaApi.API
 {
     public class Program
@@ -37,7 +38,11 @@ namespace MontelaApi.API
             builder.Services.AddStorage<AzureStorage>();
             //builder.Services.AddStorage(StorageType.Local);
 
-            builder.Services.AddControllers(options => options.Filters.Add<ValidationFilters>())
+            builder.Services.AddControllers(options =>
+            {
+                options.Filters.Add<ValidationFilters>();
+                options.Filters.Add<RolePermissionFilter>();
+            })
                 .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<ProductCreateValidator>())
                 .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
 
