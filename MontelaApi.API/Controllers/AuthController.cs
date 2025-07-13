@@ -1,13 +1,11 @@
-﻿using Application.Features.Commands.User.FacebookLogin;
-using Application.Features.Commands.User.GoogleLogin;
-using Application.Features.Commands.User.LoginUser;
-using Application.Features.Commands.User.RefreshTokenLogin;
-using Application.Features.Commands.User.ResetPassword;
-using Application.Features.Commands.User.VerifyResetToken;
+﻿using Application.Features.Authentification.Commands.Login;
+using Application.Features.Authentification.Commands.RefreshToken;
+using Application.Features.Authentification.Commands.Register;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MontelaApi.API.Controllers
+namespace FitCircleAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -20,47 +18,60 @@ namespace MontelaApi.API.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost("[action]")]
-        public async Task<IActionResult> Login(LoginUserCommandRequest loginUserCommandRequest)
+        /// <summary>
+        /// Register User
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns>IActionResult</returns>
+        [HttpPost("Register")]
+        public async Task<IActionResult> Register([FromBody] RegisterCommand request)
         {
-            LoginUserCommandResponse response = await _mediator.Send(loginUserCommandRequest);
-            return Ok(response);
+           var result = await _mediator.Send(request);
+            if (!result.IsSuccess)
+                return BadRequest(result.Message);
+
+            return Ok(result);
         }
 
-        [HttpPost("[action]")]
-        public async Task<IActionResult> RefreshTokenLogin([FromBody]RefreshTokenLoginCommandRequest refreshTokenLoginCommand)
+        /// <summary>
+        /// Login User
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns>IActionResult</returns>
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login([FromBody] LoginCommand request)
         {
-            RefreshTokenLoginCommandResponse response = await _mediator.Send(refreshTokenLoginCommand);
-            return Ok(response);
+            var result = await _mediator.Send(request);
+            if(!result.IsSuccess)
+                return NotFound(result.Message);
+
+            return Ok(result);
         }
 
-        [HttpPost("google-login")]
-        public async Task<IActionResult> GoogleLogin(GoogleLoginCommandRequest googleLoginCommandRequest)
+        /// <summary>
+        /// Refreshing Access token with Refresh token
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenCommand request)
         {
-            GoogleLoginCommandResponse response = await _mediator.Send(googleLoginCommandRequest);
-            return Ok(response);
+            var result = await _mediator.Send(request);
+            if(!result.IsSuccess)
+                return BadRequest(result.Message);
+
+            return Ok(result);
         }
 
-        [HttpPost("facebook-login")]
-        public async Task<IActionResult> FacebookLogin(FacebookLoginCommandRequest facebookLoginCommandRequest)
+        /// <summary>
+        /// Test endpoint protected with [Authorize]
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("test")]
+        [Authorize]
+        public IActionResult TestProtected()
         {
-            FacebookLoginCommandResponse response = await _mediator.Send(facebookLoginCommandRequest);
-            return Ok(response);
-        }
-
-        [HttpPost("reset-password")]
-
-        public async Task<IActionResult> ResetPassword([FromBody]ResetPasswordCommandRequest request)
-        {
-            ResetPasswordCommandResponse response = await _mediator.Send(request);
-            return Ok(response);
-        }
-
-        [HttpPost("verify-resetToken")]
-        public async Task<IActionResult> VerifyResetToken([FromBody] VerifyResetTokenCommandRequest request)
-        {
-            VerifyResetTokenCommandResponse response = await _mediator.Send(request);
-            return Ok(response);
+            return Ok("You are protected");
         }
     }
 }
