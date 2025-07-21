@@ -73,5 +73,7 @@ namespace FitCircleAPI.Controllers
         {
             return Ok("You are protected");
         }
+
+
     }
 }
