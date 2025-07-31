@@ -1,6 +1,8 @@
-﻿using Application.Features.Authentification.Commands.Login;
+﻿using Application.Features.Authentification.Commands.ForgotPassword;
+using Application.Features.Authentification.Commands.Login;
 using Application.Features.Authentification.Commands.RefreshToken;
 using Application.Features.Authentification.Commands.Register;
+using Application.Features.Authentification.Commands.ResetPassword;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -74,6 +76,25 @@ namespace FitCircleAPI.Controllers
             return Ok("You are protected");
         }
 
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordCommand request)
+        {
+            var result = await _mediator.Send(request);
 
+            if (!result.IsSuccess)
+                return BadRequest(result.Message);
+
+            return Ok(result);
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordCommand request)
+        {
+            var result = await _mediator.Send(request);
+            if (!result.IsSuccess)
+                return BadRequest(result.Message);
+
+            return Ok(result);
+        }
     }
 }
