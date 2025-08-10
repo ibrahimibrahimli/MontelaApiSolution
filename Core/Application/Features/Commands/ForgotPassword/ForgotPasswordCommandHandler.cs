@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System.Net;
+using Application.Common.Models.Email;
 
 namespace Application.Features.Authentification.Commands.ForgotPassword
 {
@@ -33,7 +34,12 @@ namespace Application.Features.Authentification.Commands.ForgotPassword
 
             var resetLink = $"https://fitcircle.com/reset-password?userId={user.Id}&token={encodedToken}";
 
-            await _mailService.SendAsync(user.Email, "Reset Password", resetLink);
+            await _mailService.SendAsync(new MailRequest
+            {
+                To = user.Email,
+                Subject = "Reset Password",
+                HtmlBody = resetLink,
+            });
 
             return Result<string>.Success("Successfully sended password reset link");
         }
